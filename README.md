@@ -251,7 +251,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Issues**: [GitHub Issues](https://github.com/adityajaif/StickTO/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/adityajaif/StickTO/discussions)
-- **Email**: [Your Email]
+- **Email**: [adityajaif2004@gmail.com]
 
 ## 🔮 Roadmap
 
