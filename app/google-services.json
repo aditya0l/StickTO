@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "812005101762",
+    "project_id": "stickto-71434",
+    "storage_bucket": "stickto-71434.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:812005101762:android:2ebbbe027c2eb3cc3b2b5b",
+        "android_client_info": {
+          "package_name": "com.example.noteflow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "812005101762-24q4hi2af8bm7u6h2e07iqb543ihogkr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.noteflow",
+            "certificate_hash": "3b854bfefebfe276b7e12f87134443e7956d0083"
+          }
+        },
+        {
+          "client_id": "812005101762-7h47tob2ubqqm9mq0hbm1f1jpb4t8ond.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBUN-u37LxnCRLI3x6Rf2KVWFgMtc9e54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "812005101762-7h47tob2ubqqm9mq0hbm1f1jpb4t8ond.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
