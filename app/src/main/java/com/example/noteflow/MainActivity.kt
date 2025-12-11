@@ -10,12 +10,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.example.noteflow.data.NoteDatabse
 import com.example.noteflow.data.ThemePreferenceManager
+import com.example.noteflow.remoteconfig.RemoteConfigManager
 import com.example.noteflow.repository.NoteRepositoryImpl
 import com.example.noteflow.ui.NoteApp
 import com.example.noteflow.ui.theme.NoteFlowTheme
+import com.example.noteflow.viewmodel.AppConfigViewModel
 import com.example.noteflow.viewmodel.NoteViewModel
 import com.example.noteflow.viewmodel.NoteViewModelFactory
-import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -23,7 +24,9 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
+        
+        // Initialize Firebase Remote Config (FirebaseApp initialized inside)
+        RemoteConfigManager.initialize(this)
 
         setContent {
             val context = LocalContext.current
@@ -37,15 +40,17 @@ class MainActivity : ComponentActivity() {
                 "notes.db"
             ).fallbackToDestructiveMigration().build()
 
-            // Repository & ViewModel
+            // Repository & ViewModels
             val repo = NoteRepositoryImpl(db.noteDao())
             val factory = NoteViewModelFactory(repo)
-            val viewModel: NoteViewModel = viewModel(factory = factory)
+            val noteViewModel: NoteViewModel = viewModel(factory = factory)
+            val appConfigViewModel: AppConfigViewModel = viewModel()
 
             // Theming + App
             NoteFlowTheme(darkTheme = isDarkMode) {
                 NoteApp(
-                    viewModel = viewModel,
+                    noteViewModel = noteViewModel,
+                    appConfigViewModel = appConfigViewModel,
                     isDarkTheme = isDarkMode,
                     onThemeToggle = {
                         CoroutineScope(Dispatchers.IO).launch {

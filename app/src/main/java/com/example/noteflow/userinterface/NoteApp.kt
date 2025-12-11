@@ -1,68 +1,64 @@
 package com.example.noteflow.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.firebase.auth.FirebaseAuth
-import com.example.noteflow.userinterface.LoginScreen
-import com.example.noteflow.userinterface.RegisterScreen
+import com.example.noteflow.userinterface.MaintenanceModeScreen
 import com.example.noteflow.userinterface.NotesListScreen
 import com.example.noteflow.userinterface.SettingsScreen
-import com.example.noteflow.viewmodel.AuthViewModel
+import com.example.noteflow.viewmodel.AppConfigViewModel
 import com.example.noteflow.viewmodel.NoteViewModel
 
 @Composable
 fun NoteApp(
-    viewModel: NoteViewModel,
+    noteViewModel: NoteViewModel,
+    appConfigViewModel: AppConfigViewModel,
     isDarkTheme: Boolean,
     onThemeToggle: (Boolean) -> Unit
 ) {
     val navController = rememberNavController()
-    val authViewModel = remember { AuthViewModel() }
-    val currentUser = FirebaseAuth.getInstance().currentUser
+    
+    // Observe Remote Config state
+    val isLoading by appConfigViewModel.isLoading.collectAsState()
+    val appEnabled by appConfigViewModel.appEnabled.collectAsState()
+    val maintenanceMessage by appConfigViewModel.maintenanceMessage.collectAsState()
+    
+    // Show loading while fetching Remote Config
+    if (isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+    
+    // Show maintenance screen if app is disabled
+    if (!appEnabled) {
+        MaintenanceModeScreen(message = maintenanceMessage)
+        return
+    }
 
+    // Normal navigation when app is enabled
     NavHost(
         navController = navController,
-        startDestination = if (currentUser == null) "login" else "notes"
+        startDestination = "notes"
     ) {
-        // ─── LOGIN ─────────────────────────────────────────────────────────
-        composable("login") {
-            LoginScreen(
-                viewModel            = authViewModel,
-                onLoginSuccess       = {
-                    navController.navigate("notes") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
-                onNavigateToRegister = {
-                    navController.navigate("register")
-                }
-            )
-        }
-
-        // ─── REGISTER ──────────────────────────────────────────────────────
-        composable("register") {
-            RegisterScreen(
-                viewModel            = authViewModel,
-                onRegisterSuccess    = {
-                    navController.navigate("notes") {
-                        popUpTo("register") { inclusive = true }
-                    }
-                },
-                onNavigateToLogin    = {
-                    navController.popBackStack("login", inclusive = false)
-                }
-            )
-        }
-
         // ─── NOTES LIST ───────────────────────────────────────────────────
         composable("notes") {
             NotesListScreen(
-                viewModel       = viewModel,
+                viewModel       = noteViewModel,
                 onAddNoteClick  = { navController.navigate("add_edit") },
                 onNoteClick     = { id -> navController.navigate("note_detail/$id") },
                 onSettingsClick = { navController.navigate("settings") }
@@ -74,14 +70,7 @@ fun NoteApp(
             SettingsScreen(
                 onBack       = { navController.popBackStack() },
                 isDarkTheme  = isDarkTheme,
-                onThemeToggle= onThemeToggle,
-                onLogout     = {
-                    FirebaseAuth.getInstance().signOut()
-                    navController.navigate("login") {
-                        // clear everything
-                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
-                    }
-                }
+                onThemeToggle= onThemeToggle
             )
         }
 
@@ -95,7 +84,7 @@ fun NoteApp(
             val id = backStackEntry.arguments?.getInt("noteId") ?: -1
             NoteDetailScreen(
                 noteId      = id,
-                viewModel   = viewModel,
+                viewModel   = noteViewModel,
                 onBack      = { navController.popBackStack() },
                 onEditClick = { navController.navigate("add_edit?noteId=$id") }
             )
@@ -111,7 +100,7 @@ fun NoteApp(
         ) { backStackEntry ->
             val rawId = backStackEntry.arguments?.getInt("noteId") ?: -1
             AddEditNoteScreen(
-                viewModel = viewModel,
+                viewModel = noteViewModel,
                 noteId    = rawId.takeIf { it >= 0 },
                 onBack    = { navController.popBackStack() }
             )

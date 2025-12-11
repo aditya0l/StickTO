@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <!-- App enabled flag - set to false to enable maintenance mode -->
+    <entry>
+        <key>app_enabled</key>
+        <value>true</value>
+    </entry>
+    
+    <!-- Maintenance message displayed when app is disabled -->
+    <entry>
+        <key>maintenance_message</key>
+        <value>This version is currently unavailable. Please check back later.</value>
+    </entry>
+    
+    <!-- Minimum supported version code -->
+    <entry>
+        <key>min_supported_version</key>
+        <value>1</value>
+    </entry>
+</defaultsMap>
+
