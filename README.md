@@ -132,7 +132,6 @@ app/src/main/java/com/example/noteflow/
 3. **Use Cases:**
    - Temporary app maintenance
    - Emergency bug fixes
-   - Planned downtime
    - Graceful deprecation
 
 ### Implementation
@@ -147,14 +146,6 @@ if (!isEnabled) {
     // Show MaintenanceModeScreen
 }
 ```
-
-### Legal & Compliance
-✅ **100% Google Play Policy Compliant**
-- Not a kill switch (fail-safe defaults)
-- No data deletion
-- User-friendly messaging
-- Standard industry practice
-- Used by Netflix, Spotify, etc.
 
 ---
 
